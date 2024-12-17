@@ -30,7 +30,7 @@ class UdpBridgeNode : public rclcpp::Node
   using ByteArrayMsg = comms_bridge_ros::msg::ByteArray;
 
 public:
-  static constexpr auto kDefaultNodeName = "traps_ai_cmd_bridge";
+  static constexpr auto kDefaultNodeName = "udp_bridge";
 
   COMMS_BRIDGE_ROS_PUBLIC
   UdpBridgeNode(
