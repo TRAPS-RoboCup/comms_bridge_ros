@@ -1,0 +1,21 @@
+name: Test
+
+run-name: Test:${{ github.ref_name }}(${{ github.event.head_commit.message }})
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-22.04
+
+    permissions:
+      contents: write
+
+    container:
+      image: ros:humble-ros-base
+
+    steps:
+      - name: Colcon Test
+        uses: TRAPS-RoboCup/traps-github-action/colcon-test@main
