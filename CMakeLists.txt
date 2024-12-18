@@ -63,6 +63,10 @@ endif()
 
 # ノードプラグインの設定
 rclcpp_components_register_node("${PROJECT_NAME}_lib"
+  PLUGIN "${PROJECT_NAME}::SpiBridgeNode"
+  EXECUTABLE spi_bridge_node)
+
+rclcpp_components_register_node("${PROJECT_NAME}_lib"
   PLUGIN "${PROJECT_NAME}::UdpBridgeNode"
   EXECUTABLE udp_bridge_node)
 
