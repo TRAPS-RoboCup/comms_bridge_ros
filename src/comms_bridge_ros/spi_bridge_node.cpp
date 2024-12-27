@@ -55,7 +55,7 @@ public:
     const auto device_raw = this->declare_parameter("device", "/dev/spidev0.0");
     const auto device_normalized = std::filesystem::path(device_raw).lexically_normal();
     const auto device = std::filesystem::absolute(device_normalized).string();
-    
+
     fd_ = open(device.c_str(), O_RDWR);
     if (fd_ < 0) {
       const auto error_str = "Failed to open spi device(" + device + "): " + std::strerror(errno);
