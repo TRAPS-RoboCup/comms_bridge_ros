@@ -21,6 +21,9 @@ extern "C" {
 #include <unistd.h>
 }
 
+#include <cerrno>
+#include <cstring>
+#include <filesystem>
 #include <string>
 #include <vector>
 
@@ -49,7 +52,10 @@ public:
     spi_miso_msg_(std::make_unique<MultiByteArrayMsg>())
   {
     // SPI device
-    const auto device = this->declare_parameter("device", "/dev/spidev0.0");
+    const auto device_raw = this->declare_parameter("device", "/dev/spidev0.0");
+    const auto device_normalized = std::filesystem::path(device_raw).lexically_normal();
+    const auto device = std::filesystem::absolute(device_normalized).string();
+    
     fd_ = open(device.c_str(), O_RDWR);
     if (fd_ < 0) {
       const auto error_str = "Failed to open spi device(" + device + "): " + std::strerror(errno);
@@ -83,9 +89,9 @@ public:
     }
 
     spi_miso_publisher_ = this->create_publisher<MultiByteArrayMsg>(
-      "spi_" + device_replaced + "_miso", rclcpp::QoS(1).best_effort());
+      "spi" + device_replaced + "_miso", rclcpp::QoS(1).best_effort());
     spi_mosi_subscriber_ = this->create_subscription<MultiByteArrayMsg>(
-      "spi_" + device_replaced + "_mosi", rclcpp::QoS(1).best_effort(),
+      "spi" + device_replaced + "_mosi", rclcpp::QoS(1).best_effort(),
       [this](MultiByteArrayMsg::UniquePtr msg) {this->bridge(std::move(msg));});
   }
 
