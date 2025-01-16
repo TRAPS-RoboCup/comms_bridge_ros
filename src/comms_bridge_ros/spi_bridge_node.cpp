@@ -87,12 +87,28 @@ public:
         c = '_';
       }
     }
+    const auto topic_names =
+      this->declare_parameter("topic_names", std::vector<std::string>({"spi" + device_replaced}));
 
-    spi_miso_publisher_ = this->create_publisher<MultiByteArrayMsg>(
-      "spi" + device_replaced + "_miso", rclcpp::QoS(1).best_effort());
-    spi_mosi_subscriber_ = this->create_subscription<MultiByteArrayMsg>(
-      "spi" + device_replaced + "_mosi", rclcpp::QoS(1).best_effort(),
-      [this](MultiByteArrayMsg::UniquePtr msg) {this->bridge(std::move(msg));});
+    const auto qos_overriding_options = rclcpp::QosOverridingOptions{
+      rclcpp::QosPolicyKind::Depth, rclcpp::QosPolicyKind::Durability,
+      rclcpp::QosPolicyKind::History, rclcpp::QosPolicyKind::Reliability};
+
+    rclcpp::PublisherOptions pub_options;
+    pub_options.qos_overriding_options = qos_overriding_options;
+    rclcpp::SubscriptionOptions sub_options;
+    sub_options.qos_overriding_options = qos_overriding_options;
+
+    spi_mosi_subs_.reserve(topic_names.size());
+    for (const auto & topic_name : topic_names) {
+      auto pub = this->create_publisher<MultiByteArrayMsg>(
+        topic_name + "/miso", rclcpp::QoS(1).best_effort(), pub_options);
+      spi_mosi_subs_.emplace_back(
+        this->create_subscription<MultiByteArrayMsg>(
+          topic_name + "/mosi", rclcpp::QoS(1).best_effort(),
+          [this, pub](MultiByteArrayMsg::UniquePtr msg) {this->bridge(pub, std::move(msg));},
+          sub_options));
+    }
   }
 
   COMMS_BRIDGE_ROS_PUBLIC
@@ -119,11 +135,13 @@ public:
 private:
   /// @brief Bridge SPI messages
   /// @param spi_mosi_msg
-  void bridge(MultiByteArrayMsg::UniquePtr spi_mosi_msg)
+  void bridge(
+    rclcpp::Publisher<MultiByteArrayMsg>::SharedPtr spi_miso_pub,
+    MultiByteArrayMsg::UniquePtr spi_mosi_msg)
   {
     // check empty
     if (spi_mosi_msg->byte_arrays.empty()) {
-      spi_miso_publisher_->publish(std::move(spi_mosi_msg));
+      spi_miso_pub->publish(std::move(spi_mosi_msg));
       return;
     }
 
@@ -148,7 +166,7 @@ private:
     ioctl(fd_, SPI_IOC_MESSAGE(spi_mosi_msg->byte_arrays.size()), ioc_transfers_.data());
 
     // publish
-    spi_miso_publisher_->publish(std::move(spi_miso_msg_));
+    spi_miso_pub->publish(std::move(spi_miso_msg_));
 
     // reset rx_buffer
     spi_miso_msg_ = std::move(spi_mosi_msg);
@@ -165,8 +183,7 @@ private:
   MultiByteArrayMsg::UniquePtr spi_miso_msg_;
 
   // ROS
-  rclcpp::Publisher<MultiByteArrayMsg>::SharedPtr spi_miso_publisher_;
-  rclcpp::Subscription<MultiByteArrayMsg>::SharedPtr spi_mosi_subscriber_;
+  std::vector<rclcpp::Subscription<MultiByteArrayMsg>::SharedPtr> spi_mosi_subs_;
 };
 
 }  // namespace comms_bridge_ros
