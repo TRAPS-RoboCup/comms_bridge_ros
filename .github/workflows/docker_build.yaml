@@ -15,7 +15,7 @@ jobs:
 
     steps:
       - name: Build and push
-        uses: miyajimad0620/traps-github-action/docker-build-ros2-pkg@feature/docker-build-ros2-pkg/Dockerfile
+        uses: TRAPS-RoboCup/traps-github-action/docker-build-ros2-pkg@main
         with:
           token: ${{ secrets.PAT }}
           # platforms: linux/amd64, linux/arm64/v8
