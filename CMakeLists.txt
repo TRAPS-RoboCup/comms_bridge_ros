@@ -80,11 +80,11 @@ foreach(install_directory IN LISTS install_directories)
   endif()
 endforeach()
 
-# # テスト
-# if(BUILD_TESTING)
-#   ament_auto_find_test_dependencies()
-#   ament_lint_auto_find_test_dependencies()
-# endif()
+# テスト
+if(BUILD_TESTING)
+  ament_auto_find_test_dependencies()
+  ament_lint_auto_find_test_dependencies()
+endif()
 
 # パッケージング
 ament_auto_package()
