@@ -61,24 +61,24 @@ if(${PROJECT_NAME}_lib_files_count GREATER 0)
   target_link_libraries("${PROJECT_NAME}_lib" "${cpp_typesupport_target}")
 endif()
 
-# # ノードプラグインの設定
-# rclcpp_components_register_node("${PROJECT_NAME}_lib"
-#   PLUGIN "${PROJECT_NAME}::SpiBridgeNode"
-#   EXECUTABLE spi_bridge_node)
+# ノードプラグインの設定
+rclcpp_components_register_node("${PROJECT_NAME}_lib"
+  PLUGIN "${PROJECT_NAME}::SpiBridgeNode"
+  EXECUTABLE spi_bridge_node)
 
-# rclcpp_components_register_node("${PROJECT_NAME}_lib"
-#   PLUGIN "${PROJECT_NAME}::UdpBridgeNode"
-#   EXECUTABLE udp_bridge_node)
+rclcpp_components_register_node("${PROJECT_NAME}_lib"
+  PLUGIN "${PROJECT_NAME}::UdpBridgeNode"
+  EXECUTABLE udp_bridge_node)
 
-# # ディレクトリのinstall
-# set(install_directories config;launch;${${PROJECT_NAME_UPPER}_INSTALL_DIRECTORIES})
-# foreach(install_directory IN LISTS install_directories)
-#   if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${install_directory}")
-#     install(DIRECTORY
-#       "${install_directory}"
-#       DESTINATION share/${PROJECT_NAME}/)
-#   endif()
-# endforeach()
+# ディレクトリのinstall
+set(install_directories config;launch;${${PROJECT_NAME_UPPER}_INSTALL_DIRECTORIES})
+foreach(install_directory IN LISTS install_directories)
+  if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${install_directory}")
+    install(DIRECTORY
+      "${install_directory}"
+      DESTINATION share/${PROJECT_NAME}/)
+  endif()
+endforeach()
 
 # # テスト
 # if(BUILD_TESTING)
