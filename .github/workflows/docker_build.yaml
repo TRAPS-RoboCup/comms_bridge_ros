@@ -15,4 +15,8 @@ jobs:
 
     steps:
       - name: Build and push
-        uses: TRAPS-RoboCup/traps-github-action/ros2-docker-build@main
+        uses: TRAPS-RoboCup/traps-github-action/docker-build-ros2-pkg@main
+        with:
+          token: ${{ secrets.PAT }}
+          # platforms: linux/amd64, linux/arm64/v8
+          # rosdistro: humble
