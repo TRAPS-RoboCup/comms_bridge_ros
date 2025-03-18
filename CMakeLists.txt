@@ -62,9 +62,9 @@ if(${PROJECT_NAME}_lib_files_count GREATER 0)
 endif()
 
 # ノードプラグインの設定
-rclcpp_components_register_node("${PROJECT_NAME}_lib"
-  PLUGIN "${PROJECT_NAME}::SpiBridgeNode"
-  EXECUTABLE spi_bridge_node)
+# rclcpp_components_register_node("${PROJECT_NAME}_lib"
+#   PLUGIN "${PROJECT_NAME}::SpiBridgeNode"
+#   EXECUTABLE spi_bridge_node)
 
 # rclcpp_components_register_node("${PROJECT_NAME}_lib"
 #   PLUGIN "${PROJECT_NAME}::UdpBridgeNode"
