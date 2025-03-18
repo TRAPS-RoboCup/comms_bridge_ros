@@ -17,3 +17,4 @@ jobs:
         uses: TRAPS-RoboCup/traps-github-action/push-tag@main
         with:
           checkout: false
+          token: ${{ secrets.PAT }}
