@@ -17,7 +17,7 @@ limitations under the License. -->
 
 <package format="3">
   <name>comms_bridge_ros</name>
-  <version>0.1.0</version>
+  <version>0.1.1</version>
   <description>Communication and ROS2 bridge</description>
   <maintainer email="traps.robocup@gmail.com">TRAPS</maintainer>
   <license>Apache-2.0</license>
